@@ -1,0 +1,40 @@
+==========================
+Lightning Canonical Links
+==========================
+
+  Author: Micky Hulse
+ Created: 03/17/09
+Modified: 03/19/09
+
+==========================
+About:
+==========================
+The rgCanonicalLinkRule RULE/plugin automatically generates a canonical link tag to place within your template head tags.
+
+About rel="canonical":
+http://google.com/support/webmasters/bin/answer.py?answer=139394
+
+Notice: %request.Data("uri", 1) (DTI-specific variable) will override %request.URL.
+
+The RULE code has no Class/ClassMethod dependencies.
+
+Tested on DTI Lightning v7.4.
+
+==========================
+Examples:
+==========================
+
+Basic:
+<rg:canonical:link>#(uri)#</rg:canonical:link>
+Advanced:
+<rg:canonical:link varName="foo" strip="/csp" xhtml="true" relative="true">#(foo)#</rg:canonical:link>
+Manual link creation:
+<rg:canonical:link varName="bar" linkOnly="true" strip="/csp/cms"><link rel="canonical" href="#(bar)#?hello=world"></rg:canonical:link>
+
+==========================
+Todo:
+==========================
+
+I would like to upgrade the RULE so that it works as a single tag:
+
+<rg:canonical:link ... />

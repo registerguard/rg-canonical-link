@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="22">
+<CSP name="rules/rgCanonicalLinkRule.csr" application="/csp/cms/" default="1"><![CDATA[
+<csr:rule name="rgCanonicalLinkRule" match="rg:canonical:link">
+	
+	<csr:description>
+		
+		  Author: Micky Hulse
+		 Created: 03/17/09
+		Modified: 03/19/09
+		   About: rgCanonicalLinkRule RULE/plugin automatically generates a canonical link tag to place within your template head tags.
+		          http://google.com/support/webmasters/bin/answer.py?answer=139394
+		          Notice: %request.Data("uri", 1) will override %request.URL.
+		Examples: 
+		          Basic:
+		          <rg:canonical:link>#(uri)#</rg:canonical:link>
+		          Advanced:
+		          <rg:canonical:link varName="foo" strip="/csp" xhtml="true" relative="true">#(foo)#</rg:canonical:link>
+		          Manual link creation:
+		          <rg:canonical:link varName="bar" linkOnly="true" strip="/csp/cms"><link rel="canonical" href="#(bar)#?hello=world"></rg:canonical:link>
+	</csr:description>
+	
+	<csr:attribute name="varName" description="Local variable name. Default is 'uri'." type="VariableName:STRING">
+	<csr:attribute name="strip" description="String to strip from the return uri. Optional." type="VariableName:STRING">
+	<csr:attribute name="xhtml" description="Set this attribute to 'true' if you want XHTML self-closing tag (i.e. ' />')?. Default is 'false'." type="VariableName:STRING">
+	<csr:attribute name="linkOnly" description="Set this attribute to 'true' if you just want the uri. Default is 'false'." type="VariableName:STRING">
+	<csr:attribute name="relative" description="Set this attribute to 'true' if you want to use a root relative uri. Default is 'false'." type="VariableName:STRING">
+		
+	<csr:action>
+		
+		<script language="cache" runat="server">
+			
+			// Declare:
+			new csr
+			
+			// Initialize:
+			set (csr("protocol"), csr("server_name"), csr("port"), csr("path"), csr("link")) = ""
+			
+			// Absolute uri?
+			if ($zconvert(##'..GetAttribute("relative", "FALSE")'##, "U") = "FALSE") {
+				
+				// Protocol:
+				set csr("protocol") = $piece($zconvert(%request.Protocol, "L"), "/") _ "://" // We should now have "http://".
+				
+				// Server name:
+				set csr("server_name") = %request.GetCgiEnv("SERVER_NAME", "")
+				
+				// Port:
+				set csr("port") = $select(%request.GetCgiEnv("SERVER_PORT", "") = 80:"", 1:":" _ %request.GetCgiEnv("SERVER_PORT"))
+			
+			}
+			
+			// If "uri" exists, use that instead of the %request.URL:
+			set csr("path") = $case($get(%request.Data("uri", 1)), "":%request.URL, :..EscapeURL(%request.Data("uri", 1)))
+			
+			// Build the link and strip any unwanted bits:
+			set csr("link") = $replace((csr("protocol") _ csr("server_name") _ csr("port") _ csr("path")), ##'..GetAttribute("strip", "")'##, "")
+			
+			// Assign output to <csr:children> "local" variable:
+ 			set @##'..GetAttribute("varName", "uri")'## = $case($zconvert(##'..GetAttribute("linkOnly", "FALSE")'##, "U"), "TRUE":csr("link"), :"<link rel=""canonical"" href=""" _ csr("link") _ """" _ $case($zconvert(##'..GetAttribute("xhtml", "FALSE")'##, "U"), "TRUE":" /", :"") _ ">") // This last part determines (X)HTML format of link.
+ 			
+ 			// Remove: 
+ 			kill csr
+			
+		</script>
+		
+		<csr:children>
+		
+		<script language="cache" runat="server">
+			
+			// Remove <csr:children> "local" variable:
+			kill @##'..GetAttribute("varName", "uri")'##
+			
+		</script>
+	  	
+	</csr:action>
+	
+</csr:rule>]]></CSP>
+</Export>
