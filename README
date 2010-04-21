@@ -9,6 +9,7 @@ Modified: 03/19/09
 ==========================
 About:
 ==========================
+
 The rgCanonicalLinkRule RULE/plugin automatically generates a canonical link tag to place within your template head tags.
 
 About rel="canonical":
