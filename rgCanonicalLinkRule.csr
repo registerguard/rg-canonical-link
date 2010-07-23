@@ -1,6 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="22">
-<CSP name="rules/rgCanonicalLinkRule.csr" application="/csp/cms/" default="1"><![CDATA[
 <csr:rule name="rgCanonicalLinkRule" match="rg:canonical:link">
 	
 	<csr:description>
@@ -75,5 +72,4 @@
 	  	
 	</csr:action>
 	
-</csr:rule>]]></CSP>
-</Export>
+</csr:rule>
